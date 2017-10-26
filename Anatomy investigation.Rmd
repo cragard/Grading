@@ -1,0 +1,66 @@
+---
+title: "Mamalian Anatomy Performance"
+author: "Christopher Agard"
+date: "October 15, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+rm(list=ls()) #clears the environment
+# filefolder="G:/Lizard work for the road/excel files"
+filefolder="C:/Users/test/Documents/Temple/Anatomy"
+knitr::opts_knit$set(root.dir = normalizePath(filefolder)) 
+#this is an option we have to use for RMD notebooks otherwise the wd is reset after each chunk is executed
+#setwd(filefolder) #this can be used instead for a regular rscript
+# options(pkgType = "source")
+mypackages=c("ggplot2","tables","knitr","xlsx","rJava") 
+neededpackages=mypackages[which(!is.element(el=mypackages,set=installed.packages()))]
+if(length(neededpackages>0)){
+    install.packages(neededpackages)
+}else{
+    warning("All packages already installed")
+}
+lapply(mypackages,function(x) library(x,character.only = T))
+```
+
+#Importing and exploring the data
+
+```{r}
+mydata<-read.csv("Anatomy14x2017.csv")
+head(mydata)
+str(mydata)
+names(mydata)
+class(mydata$Student.ID)
+```
+
+#identify my students
+```{r}
+mystudentIDs<-c(915171838,914948312,915076944,915160780,915159574,915254895,915456497,915097650,915219712,915160628,915307818,915061127,914979780,915005863,915333210,915126607,915233626)
+mydata$mystudent<-logical(nrow(mydata))
+for(i in 1:nrow(mydata)){
+        if(is.element(el=mydata[i,"Student.ID"],set=mystudentIDs)){
+                mydata[i,"mystudent"]<-T
+        }
+}
+table(mydata$mystudent)
+```
+
+#Explore Differences
+
+Create a function to generate boxplots by "mystudent variable" and identify variables of interest
+```{r}
+mybox<-function(variable){
+        if(class(mydata[,variable]==numeric)){
+                result<-boxplot(variable~mystudent,data=mydata)
+        }else{
+                result<-paste(variable, "is not numeric.",sep = " ")
+        }
+        return(result)
+        
+}
+# myvariable<-c(names(mydata)[which(names(mydata)!="mystudent" & names(mydata)!="ï..Last.Name"& names(mydata)!="First.Name"& names(mydata)!="Username"& names(mydata)!="Student.ID"& names(mydata)!= "Last.Access"& names(mydata)!="Availability")])
+```
+Apply function 
+```{r}
+mybox(names(mydata)[1])
+```
