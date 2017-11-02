@@ -1,0 +1,29 @@
+---
+title: "Affected students"
+author: "Christopher Agard"
+date: "November 1, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Read data into R
+```{r}
+exam1data<-read.csv("E1FALL17.csv")
+```
+
+Extract relevant data for students who answered "B" foritem 23 on the 1st exam
+Keep in mind that these are listed as numeric values adn the order is reveresed, so for an item with options "A","B","C", and "D", A=4, B=3, C=2, and D=1.
+
+The second line in this next chunk displays the resulting data frame.
+```{r cars}
+affectStudents<-exam1data[which(exam1data$Item23==3),c("ID","Last","First","Middle","Score")]
+print(affectStudents)
+```
+
+Export the new dataframe to a csv.
+```{r}
+write.csv(affectStudents,"affected_students.csv")
+```

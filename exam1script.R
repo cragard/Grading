@@ -8,8 +8,8 @@ rm(list = ls())
 #add vartoNA() to useful functions
 #add mysumstat() to useful functions
 #source useful functions
-# source("~/GitHub/useful-functions/unsortedFunctions.Rmd")
-# source("~/GitHub/useful-functions/statisticalFunctions.Rmd")
+# source("C:/Users/test/Documents/GitHub/useful-functions/unsortedFunctions.Rmd") # doesn't work
+# source("C:/Users/test/Documents/GitHub/useful-functions/statisticalFunctions.Rmd") # doesn't work
 
 #install packages and library
 
@@ -24,7 +24,7 @@ myinstall<-function(mypackages=NULL){
 }
 
 myinstall("stats")
-setwd("./SOAR 1111/")
+setwd("")
 
 #make sure data file is included in folder
 dir()

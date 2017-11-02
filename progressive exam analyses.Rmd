@@ -1,0 +1,22 @@
+---
+title: "Bio 1111 Assessment Analysis"
+author: "Christopher Agard"
+date: "October 31, 2017"
+output: html_document
+---
+
+The goal of this script is to read csvs from a folder into r and :
+- standardize column names
+- add a column to label the exam
+- generate a list of the most frequently incorrectly answered items of a given exam
+- generate summary statistics within an exam
+- generate inferential statistics within an exam
+- generate summary statistics/figures across exams
+- generate inferential statistics across exams
+- compare summary statistics/figures across exams 
+
+First we must set up the environment.
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
