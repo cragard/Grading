@@ -6,7 +6,8 @@ def cleanSoarExam (data\
                    , examNum\
                    , fileType='flat'\
                    , colSpec = [(0,9),(10,21),(22,28),(29,30),(30,32),(32,34),(34,36),(36,38),(39,41),(41,68)]\
-                  , soarSessions=[]):
+                  , soarSessions=[]
+                  , nkeys = 1):
     #import pandas as pd
     #import numpy as np
     #import os
@@ -38,14 +39,33 @@ def cleanSoarExam (data\
         else:
             df.loc[df.soar.isin(soarSessions),'soarType']='mine'
             df.loc[~df.soar.isin(soarSessions),'soarType']='other'
-            df.loc[df.tuid=='NNNNNNNNN','soarType']='key'
+            df.loc[(df['tuid'].str.contains('|'.join(['NNN','KEY'])))|(df['first'].str.contains('|'.join(['NNN'])))|(df['last'].str.contains('|'.join(['NNN']))),'soarType']='key'
+        if df.loc[df['soarType']=='key'].shape[0]!= nkeys:
+            print("Found {} keys in the df; keys should be confirmed manually".format(df.loc[df['soarType']=='key'].shape[0]))
+        dfkey = pd.DataFrame()
+        for soar in df.soar.unique():
+            tmp = df.loc[df.soarType=='key']
+            tmp['soar'] = soar
+            dfkey = dfkey.append(tmp)
+        df = df.append(dfkey)
     return df
 
 def countwrong (df,col,ver,truthcol = 'soarType',truthind = 'key',compind = ['mine'],vercol = 'version'):
-    truth = df.loc[(df[truthcol]==truthind)&(df[vercol] == ver),col]
-    comp = df.loc[(df[truthcol].isin(compind))&(df[vercol] == ver),col]
-    res = pd.DataFrame(data ={'item':[col],'number':[(comp != truth[0]).sum()]})
-    return(res)
+    try:
+        truth = df.loc[(df[truthcol]==truthind)&(df[vercol] == ver),col]
+    except:
+        print("failed to generate 'truth' - truthcol:{};truthind:{};vercol:{};ver:{};col:{}"\
+        .format(truthcol,truthind,vercol,ver,col))
+    try:
+        comp = df.loc[(df[truthcol].isin(compind))&(df[vercol] == ver),col]
+    except:
+        print("failed to generate 'comp' - truthcol:{};truthind:{};vercol:{};ver:{};col:{}"\
+        .format(truthcol,truthind,vercol,ver,col))
+    try:
+        res = pd.DataFrame(data ={'item':[col],'number':[(comp != truth[0]).sum()]})
+    except:
+        print("failed to generate 'res' - truth:{}".format(truth))
+    return res
 
 def countwrong_allcol(df,ver,itemcols,sortfields = ['number','item'],
                       truthcol = 'soarType',truthind = 'key',compind = 'mine',vercol = 'version'):
