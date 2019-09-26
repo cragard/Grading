@@ -74,5 +74,21 @@ def countwrong_allcol(df,ver,itemcols,sortfields = ['number','item'],
         tmp = tmp.append(countwrong(df= df, col = col, ver = ver))
     tmp = tmp.sort_values(sortfields,ascending=False).reset_index(drop = True)
     return tmp
-	
-	
+
+def returnwrong (df,col,ver,truthcol = 'soarType',truthind = 'key',compind = ['mine'],vercol = 'version'):
+    try:
+        truth = df.loc[(df[truthcol]==truthind)&(df[vercol] == ver),col]
+    except:
+        print("failed to generate 'truth' - truthcol:{};truthind:{};vercol:{};ver:{};col:{}"\
+        .format(truthcol,truthind,vercol,ver,col))
+    try:
+        comp = df.loc[(df[truthcol].isin(compind))&(df[vercol] == ver),col]
+    except:
+        print("failed to generate 'comp' - truthcol:{};truthind:{};vercol:{};ver:{};col:{}"\
+        .format(truthcol,truthind,vercol,ver,col))
+    try:
+        df[col] = (comp != truth[0])
+        res = df[col]
+    except:
+        print("failed to generate 'res' - truth:{}".format(truth))
+    return res
