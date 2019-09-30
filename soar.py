@@ -92,3 +92,12 @@ def returnwrong (df,col,ver,truthcol = 'soarType',truthind = 'key',compind = ['m
     except:
         print("failed to generate 'res' - truth:{}".format(truth))
     return res
+
+def letters2num(x,letters2num_dict = {1:'D',2:'C',3:'B',4:'A',' ':'Space',np.nan:'Blank'}):
+    try:
+        x = int(x)
+        x = letters2num_dict[int(x)]
+        pass
+    except:
+        x = x
+    return x
